@@ -14,6 +14,8 @@ March 2024
 
 So let it be written, so let it be done.
 
+*Wiersdorf's original README.md follows*
+
 ## Emacs Bedrock
 
 Stepping stones to a better Emacs experience

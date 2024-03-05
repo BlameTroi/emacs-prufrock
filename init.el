@@ -44,11 +44,20 @@
 ;; You can simply uncomment the following if you'd like to get started with
 ;; MELPA packages quickly:
 ;;
-;; (with-eval-after-load 'package
-;;   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+;; txb -- changed from melpa to melpa stable, and set priorities to favor
+;;        gnu first and melpa-stable last.
+(with-eval-after-load 'package
+  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (setq package-archive-priorities
+	'(("gnu" . 10) ("nongnu" . 9) ("melpa-stable" . 8))))
+
+;; txb -- i had these options in prior configs and am pulling them forward
+;;        after review.
+(setopt package-native-compile t)
+(setopt use-package-always-ensure t)
 
 ;; If you want to turn off the welcome screen, uncomment this
-;(setopt inhibit-splash-screen t)
+(setopt inhibit-splash-screen t)
 
 (setopt initial-major-mode 'fundamental-mode)  ; default mode for the *scratch* buffer
 (setopt display-time-default-load-average nil) ; this information is useless for most
@@ -76,10 +85,11 @@
 
 ;; Don't litter file system with *~ backup files; put them all inside
 ;; ~/.emacs.d/backup or wherever
+;; txb -- using my old backup directories
 (defun bedrock--backup-file-name (fpath)
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+  (let* ((backupRootDir "~/.tmp/emacs-backup/")
          (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
          (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
@@ -150,8 +160,10 @@ If the new path's directories does not exist, create them."
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
 ;; Enable horizontal scrolling
-(setopt mouse-wheel-tilt-scroll t)
-(setopt mouse-wheel-flip-direction t)
+;; txb -- nope, not for me. i brush my touchpad too frequently so i turn all these
+;;        touchy-feely things off.
+;(setopt mouse-wheel-tilt-scroll t)
+;(setopt mouse-wheel-flip-direction t)
 
 ;; We won't set these, but they're good to know about
 ;;
@@ -163,7 +175,8 @@ If the new path's directories does not exist, create them."
 (pixel-scroll-precision-mode)                         ; Smooth scrolling
 
 ;; Use common keystrokes by default
-(cua-mode)
+;; txb -- nope, if i wanted cua, i'd use soemthing different.
+;(cua-mode)
 
 ;; Display line numbers in programming mode
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -245,10 +258,15 @@ If the new path's directories does not exist, create them."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(which-key)))
+ '(blink-cursor-mode nil)
+ '(column-number-mode t)
+ '(display-time-mode t)
+ '(package-selected-packages '(which-key))
+ '(tab-bar-mode t)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "IosevkaTerm Nerd Font Mono" :foundry "nil" :slant normal :weight medium :height 241 :width normal)))))

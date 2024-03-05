@@ -21,6 +21,15 @@
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
 
+;; txb -- gc on lose focus
+;; this may not be needed anymore, but ...
+(add-function
+ :after after-focus-change-function
+ (lambda ()
+   (unless (frame-focus-state) (garbage-collect))))
+(setq max-lisp-eval-depth 3000)
+;; txb -- gc on lose focus
+
 ;; Silence stupid startup message
 (setq inhibit-startup-echo-area-message (user-login-name))
 
@@ -38,3 +47,12 @@
                             (background-color . "#000000")
                             (ns-appearance . dark)
                             (ns-transparent-titlebar . t)))
+;; txb -- the above is full screen, not "entirely full screen"
+
+
+;;(use-package diminish
+;;  :ensure t)
+
+;; txb -- end melpa and package changes
+
+;; early-init.el ends here
