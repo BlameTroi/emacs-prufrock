@@ -16,6 +16,7 @@
 ;;;  - Discovery aids
 ;;;  - Minibuffer/completion settings
 ;;;  - Interface enhancements/defaults
+;;;  - (txb) MacBook Trackpad and Mouse configuration
 ;;;  - Tab-bar configuration
 ;;;  - Theme
 ;;;  - Optional extras
@@ -51,6 +52,12 @@
   (setq package-archive-priorities
 	'(("gnu" . 10) ("nongnu" . 9) ("melpa-stable" . 8))))
 
+;; txb -- maintain a sense of identity and authenticity
+(setopt user-full-name "Troy Brumley")
+(setopt user-mail-address "BlameTroi@gmail.com")
+(setopt auth-sources '("~/.authinfo.gpg"))
+(setopt auth-source-cache-expiry nil)
+
 ;; txb -- i had these options in prior configs and am pulling them forward
 ;;        after review.
 (setopt package-native-compile t)
@@ -74,7 +81,8 @@
 (savehist-mode)
 
 ;; Move through windows with Ctrl-<arrow keys>
-(windmove-default-keybindings 'control) ; You can use other modifiers here
+;; txb -- mac uses control arrow to switch desktops
+;(windmove-default-keybindings 'control) ; You can use other modifiers here
 
 ;; Fix archaic defaults
 (setopt sentence-end-double-space nil)
@@ -95,6 +103,23 @@ If the new path's directories does not exist, create them."
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
 (setopt make-backup-file-name-function 'bedrock--backup-file-name)
+
+;; txb -- use the trashcan if available
+(setopt delete-by-moving-to-trash t)
+
+;; txb -- where i tend to keep most work
+(setopt default-directory "~/projects/")
+
+;; txb -- isolate customization interface changes into a
+;;        separate file and load it at init. this keeps
+;;        changes there from confusing the history of init.el.
+(setopt custom-file (concat user-emacs-directory "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+;; txb -- i prefer to move to the help window when it opens
+;;        and allow 'q' to close it.
+(setopt help-window-select t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -170,9 +195,42 @@ If the new path's directories does not exist, create them."
 ;; (setopt indent-tabs-mode nil)
 ;; (setopt tab-width 4)
 
+;; txb -- i do set defaults here for these and more.
+;;        my idea of rational indenting and spacing follows. i
+;;        had been using 2, but on wide screens i find 3 more
+;;        agreeable.
+;;
+;;        editorconfig will overide some of these at times,
+;;        so these are more fallback values.
+(setopt indent-tabs-mode nil)
+(setopt tab-width 3)
+(setopt standard-indent 3)
+(setopt mode-require-final-newline t)
+
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
+;; txb -- in programming modes i expect return/enter to re-indent
+;;        program text. while markdown actually wants trailing
+;;        spaces on some lines, i don't want that in my code.
+;;        i've learned about C-j and C-o so i'm not doing the
+;;        remap of RET for now.
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
+;;  (add-hook 'prog-mode-hook
+;;            (lambda ()
+;;              (local-set-key (kbd "RET") 'newline-and-indent)))
+
 ;; Misc. UI tweaks
 (blink-cursor-mode -1)                                ; Steady cursor
-(pixel-scroll-precision-mode)                         ; Smooth scrolling
+;(pixel-scroll-precision-mode)                         ; Smooth scrolling
+;; txb -- more to my liking.
+(setopt scroll-preserve-screen-position t)
+(setopt scroll-margin 0)
+(setopt scroll-setp 1)
+(setopt scroll-conservatively 10000) ;; this in particular works a bit like vim
 
 ;; Use common keystrokes by default
 ;; txb -- nope, if i wanted cua, i'd use soemthing different.
@@ -188,6 +246,41 @@ If the new path's directories does not exist, create them."
 ;; Modes to highlight the current line with
 (let ((hl-line-hooks '(text-mode-hook prog-mode-hook)))
   (mapc (lambda (hook) (add-hook hook 'hl-line-mode)) hl-line-hooks))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;   MacBook Trackpad and Mouse configuration
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; txb -- a rather heavy handed (but working) way to stop the mac touchpad
+;;        from moving things on me. i tried to find way to do this as a doom
+;;        after! but the double and triple variants kept being active. yes, i
+;;        searched the source. no, i couldn't find where that was done.
+;;
+;;        the customize interface isn't showing me these options in any way
+;;        that i understand. the goal here is to prevent my ham handed taps
+;;        and brushes of the touchpad from moving stuff around. i have mixed
+;;        feelings about drag-the-scrollbar mouse scrolling, but i don't like
+;;        the mouse wheel in text editing.
+;;
+;;        the following worked in doom, hopefully it works well here as well.
+
+(add-to-list
+ 'emacs-startup-hook
+ (lambda ()
+   (global-set-key [wheel-up] 'ignore)
+   (global-set-key [double-wheel-up] 'ignore)
+   (global-set-key [triple-wheel-up] 'ignore)
+   (global-set-key [wheel-down] 'ignore)
+   (global-set-key [double-wheel-down] 'ignore)
+   (global-set-key [triple-wheel-down] 'ignore)
+   (global-set-key [wheel-left] 'ignore)
+   (global-set-key [double-wheel-left] 'ignore)
+   (global-set-key [triple-wheel-left] 'ignore)
+   (global-set-key [wheel-right] 'ignore)
+   (global-set-key [double-wheel-right] 'ignore)
+   (global-set-key [triple-wheel-right] 'ignore)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -211,9 +304,15 @@ If the new path's directories does not exist, create them."
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package emacs
+;(use-package emacs
+;  :config
+;  (load-theme 'modus-vivendi))          ; for light theme, use modus-operandi
+;; txb -- my preferred theme. some things to consider are marking the theme
+;;        as safe in customization and remove the t flag, but maybe not.
+(use-package ef-themes
   :config
-  (load-theme 'modus-vivendi))          ; for light theme, use modus-operandi
+  (load-theme 'ef-melissa-dark t))
+;; txb -- other themes i like include vegetative.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -253,20 +352,4 @@ If the new path's directories does not exist, create them."
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
- '(column-number-mode t)
- '(display-time-mode t)
- '(package-selected-packages '(which-key))
- '(tab-bar-mode t)
- '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "IosevkaTerm Nerd Font Mono" :foundry "nil" :slant normal :weight medium :height 241 :width normal)))))
+;; txb -- has been moved to custom.el and is loaded earlier in this init.
