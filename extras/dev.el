@@ -21,11 +21,31 @@
 ;;;  - Common file types
 ;;;  - Eglot, the built-in LSP client for Emacs
 
+;; txb -- not implemented yet, but i use the following languages.
+
+;;(load-file (expand-file-name "extras/fortran.el" user-emacs-directory))
+;; txb -- fortran the treesitter parser for fortran will need to be installed
+;;        and configured manually/interactively. leaving that as a todo when
+;;        i figure out what all needs to be done.
+
+;; txb -- pascal
+;;(load-file (expand-file-name "extras/pascal.el" user-emacs-directory))
+
+;; txb -- guile/scheme
+;;(load-file (expand-file-name "extras/guile.el" user-emacs-directory))
+
+;; txb -- it's unclear if make/cmake/apheleia should be separated out or
+;;        done for each language. same for repls like geiser.
+
+;; txb -- gud? i want to debug from emacs.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;   Built-in config for developers
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; txb -- i don't do js or webish stuff so those are commented out for now.
 
 (use-package emacs
   :config
@@ -36,10 +56,10 @@
   (setq major-mode-remap-alist
         '((yaml-mode . yaml-ts-mode)
           (bash-mode . bash-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)
+;          (js2-mode . js-ts-mode)
+;          (typescript-mode . typescript-ts-mode)
           (json-mode . json-ts-mode)
-          (css-mode . css-ts-mode)
+;          (css-mode . css-ts-mode)
           (python-mode . python-ts-mode)))
   :hook
   ;; Auto parenthesis matching
@@ -51,10 +71,14 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; txb -- yes it probably is but i am still stuck at the command line using
+;;        git in a primitive manner. until i'm ready to expand my horizon
+;;        gitward, leaving off.
+
 ;; Magit: best Git client to ever exist
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)))
+;; (use-package magit
+;;   :ensure t
+;;   :bind (("C-x g" . magit-status)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -62,6 +86,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; txb -- do i need to do anything to get gfm support here?
 (use-package markdown-mode
   :hook ((markdown-mode . visual-line-mode)))
 
@@ -85,11 +110,16 @@
 ;;
 ;;  - https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc
 
+;; txb -- my doom setup was using lsp-mode and not eglot. i've done some reading
+;;        and i think for my usage, eglot is the better answer. we'll go with
+;;        eglot. fortls shouldn't care who is calling it.
+
 (use-package eglot
   ;; no :ensure t here because it's built-in
 
   ;; Configure hooks to automatically turn-on eglot for selected modes
-  ; :hook
+	:hook
+	((f90-mode . eglot))
   ; (((python-mode ruby-mode elixir-mode) . eglot))
 
   :custom

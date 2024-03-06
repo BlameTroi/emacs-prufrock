@@ -107,16 +107,6 @@ If the new path's directories does not exist, create them."
 ;; txb -- use the trashcan if available
 (setopt delete-by-moving-to-trash t)
 
-;; txb -- where i tend to keep most work
-(setopt default-directory "~/projects/")
-
-;; txb -- isolate customization interface changes into a
-;;        separate file and load it at init. this keeps
-;;        changes there from confusing the history of init.el.
-(setopt custom-file (concat user-emacs-directory "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
 ;; txb -- i prefer to move to the help window when it opens
 ;;        and allow 'q' to close it.
 (setopt help-window-select t)
@@ -207,6 +197,10 @@ If the new path's directories does not exist, create them."
 (setopt standard-indent 3)
 (setopt mode-require-final-newline t)
 
+;; txb -- i think it's reasonable to put editorconfig in init.el along with
+;;        which-key. it is ubiquitous. if the user does not have a config
+;;        file, it won't hurt. if he does, then he should know what to
+;;        expect.
 (use-package editorconfig
   :ensure t
   :config
@@ -225,6 +219,9 @@ If the new path's directories does not exist, create them."
 
 ;; Misc. UI tweaks
 (blink-cursor-mode -1)                                ; Steady cursor
+;; txb -- after removing mouse wheel support, leaving pixel-scroll-precision-mode
+;;        on caused scroll bar drags to be very painfully slow. commented out and
+;;        all is fine.
 ;(pixel-scroll-precision-mode)                         ; Smooth scrolling
 ;; txb -- more to my liking.
 (setopt scroll-preserve-screen-position t)
@@ -308,7 +305,8 @@ If the new path's directories does not exist, create them."
 ;  :config
 ;  (load-theme 'modus-vivendi))          ; for light theme, use modus-operandi
 ;; txb -- my preferred theme. some things to consider are marking the theme
-;;        as safe in customization and remove the t flag, but maybe not.
+;;        as safe in customization and remove the t flag, but maybe not. i mean,
+;;        really, is one any safer than the other?
 (use-package ef-themes
   :config
   (load-theme 'ef-melissa-dark t))
@@ -323,13 +321,20 @@ If the new path's directories does not exist, create them."
 ;; Uncomment the (load-file …) lines or copy code from the extras/ elisp files
 ;; as desired
 
+;; txb -- after looking at this i prefer the load-file approach taken here to
+;;        updating the load-path and using require/provide. it's more deliberate
+;;        and controlled.
+
 ;; UI/UX enhancements mostly focused on minibuffer and autocompletion interfaces
 ;; These ones are *strongly* recommended!
-;(load-file (expand-file-name "extras/base.el" user-emacs-directory))
+(load-file (expand-file-name "extras/base.el" user-emacs-directory))
 
 ;; Packages for software development
+;; txb -- packages and configuration for the languages i use will be
+;;        added to extras/ and invoked from dev.el as they are done.
 ;(load-file (expand-file-name "extras/dev.el" user-emacs-directory))
 
+;; txb -- i'm going to resist evil for now
 ;; Vim-bindings in Emacs (evil-mode configuration)
 ;(load-file (expand-file-name "extras/vim-like.el" user-emacs-directory))
 
@@ -346,10 +351,18 @@ If the new path's directories does not exist, create them."
 ;; Tools for academic researchers
 ;(load-file (expand-file-name "extras/researcher.el" user-emacs-directory))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;   Built-in customization framework
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; txb -- has been moved to custom.el and is loaded earlier in this init.
+;; txb -- isolate customization interface changes into a separate file and load
+;;        it at the end of inititalization. this keeps customization changes
+;;        out of init.el. custom.el is still under source control so diffs will
+;;        be available and hopefully helpful. it is possible (?likely?) that i
+;;        will want to pull some things out of custom and script them.
+(setopt custom-file (concat user-emacs-directory "custom.el"))
+(when (file-readable-p custom-file)
+  (load custom-file))

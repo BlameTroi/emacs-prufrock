@@ -6,7 +6,8 @@
  '(blink-cursor-mode nil)
  '(column-number-mode t)
  '(display-time-mode t)
- '(package-selected-packages '(editorconfig ef-themes which-key))
+ '(package-selected-packages
+	  '(orderless kind-icon cape corfu-terminal corfu-popupinfo corfu marginalia vertico-directory vertico embark-consult embark consult avy editorconfig ef-themes which-key))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

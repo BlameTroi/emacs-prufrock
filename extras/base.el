@@ -98,12 +98,17 @@
   :ensure t
   :init
   ;; You'll want to make sure that e.g. fido-mode isn't enabled
-  (vertico-mode))
-
-(use-package vertico-directory
-  :after vertico
+  (vertico-mode)
   :bind (:map vertico-map
               ("M-DEL" . vertico-directory-delete-word)))
+
+;; txb -- this package does not exist, but it may have been a sub-package
+;;        of vertico. the function is there so i'm copying the :bind up
+;;        to vertico and commenting this out.
+;;(use-package vertico-directory
+;;  :after vertico
+;;  :bind (:map vertico-map
+;;              ("M-DEL" . vertico-directory-delete-word)))
 
 ;; Marginalia: annotations for minibuffer
 (use-package marginalia
@@ -120,17 +125,26 @@
   (:map corfu-map
         ("SPC" . corfu-insert-separator)
         ("C-n" . corfu-next)
-        ("C-p" . corfu-previous)))
-
-;; Part of corfu
-(use-package corfu-popupinfo
-  :after corfu
+        ("C-p" . corfu-previous))
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-popupinfo-delay '(0.25 . 0.1))
   (corfu-popupinfo-hide nil)
   :config
   (corfu-popupinfo-mode))
+
+;; txb -- see my coments on vertico-directory. the mode below is in
+;;        the package for corfo so i'm trying to graft the hook and
+;;        customization into the use-package for corfu.
+;; Part of corfu
+;;(use-package corfu-popupinfo
+;;  :after corfu
+;;  :hook (corfu-mode . corfu-popupinfo-mode)
+;;  :custom
+;;  (corfu-popupinfo-delay '(0.25 . 0.1))
+;;  (corfu-popupinfo-hide nil)
+;;  :config
+;;  (corfu-popupinfo-mode))
 
 ;; Make corfu popup come up in terminal overlay
 (use-package corfu-terminal
@@ -175,8 +189,9 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; txb -- not using yet
 ;; Modify search results en masse
-(use-package wgrep
-  :ensure t
-  :config
-  (setq wgrep-auto-save-buffer t))
+;; (use-package wgrep
+;;   :ensure t
+;;   :config
+;;   (setq wgrep-auto-save-buffer t))

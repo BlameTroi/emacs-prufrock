@@ -17,6 +17,11 @@
 
 ;;; See "org-intro.txt" for a high-level overview.
 
+;; txb -- i'm not using org-roam, so i've commented things pertaining to it
+;;        out and then tweaked a few other things. i was using org-modern
+;;        and will add that and some other configuration things i had done
+;;        elsewhere even though i haven't been using org as much as i wish.
+
 ;;; Contents:
 ;;;
 ;;;  - Critical variables
@@ -41,30 +46,32 @@
 ;;; Phase 2 variables
 
 ;; Agenda variables
-(setq org-directory "~/Documents/org/") ; Non-absolute paths for agenda and
+(setq org-directory "~/Dropbox/org/") ; Non-absolute paths for agenda and
                                         ; capture templates will look here.
 
-(setq org-agenda-files '("inbox.org" "work.org"))
+(setq org-agenda-files '("inbox.org" "home.org" "financial.org" "ddo.org" "programming.org" "writing.org"))
 
 ;; Default tags
 (setq org-tag-alist '(
-                      ;; locale
-                      (:startgroup)
-                      ("home" . ?h)
-                      ("work" . ?w)
-                      ("school" . ?s)
-                      (:endgroup)
-                      (:newline)
-                      ;; scale
-                      (:startgroup)
-                      ("one-shot" . ?o)
-                      ("project" . ?j)
-                      ("tiny" . ?t)
-                      (:endgroup)
-                      ;; misc
-                      ("meta")
-                      ("review")
-                      ("reading")))
+								;; locale
+								(:startgroup)
+								("home" . ?h)
+								("financial" . ?f)
+								("ddo" . ?d)
+								("programming" . ?p)
+								("writing" . ?w)
+								(:endgroup)
+								(:newline)
+								;; scale
+								(:startgroup)
+								("one-shot" . ?o)
+								("project" . ?j)
+								("tiny" . ?t)
+								(:endgroup)
+								;; misc
+								("meta")
+								("review")
+								("reading")))
 
 ;; Org-refile: where should org-refile look?
 (setq org-refile-targets 'FIXME)
@@ -72,16 +79,16 @@
 ;;; Phase 3 variables
 
 ;; Org-roam variables
-(setq org-roam-directory "~/Documents/org-roam/")
-(setq org-roam-index-file "~/Documents/org-roam/index.org")
+;; (setq org-roam-directory "~/Dropbox/org-roam/")
+;; (setq org-roam-index-file "~/Dropbox/org-roam/index.org")
 
 ;;; Optional variables
 
 ;; Advanced: Custom link types
 ;; This example is for linking a person's 7-character ID to their page on the
 ;; free genealogy website Family Search.
-(setq org-link-abbrev-alist
-      '(("family_search" . "https://www.familysearch.org/tree/person/details/%s")))
+;;(setq org-link-abbrev-alist
+;;      '(("family_search" . "https://www.familysearch.org/tree/person/details/%s")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -90,22 +97,35 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package org
-  :hook ((org-mode . visual-line-mode)  ; wrap lines at word breaks
-         (org-mode . flyspell-mode))    ; spell checking!
+	:hook ((org-mode . visual-line-mode)  ; wrap lines at word breaks
+				(org-src-mode . display-line-numbers-mode)
+				(org-mode . flyspell-mode))    ; spell checking!
 
-  :bind (:map global-map
-              ("C-c l s" . org-store-link)          ; Mnemonic: link → store
-              ("C-c l i" . org-insert-link-global)) ; Mnemonic: link → insert
-  :config
-  (require 'oc-csl)                     ; citation support
-  (add-to-list 'org-export-backends 'md)
+	:bind (:map global-map
+            ("C-c l s" . org-store-link)          ; Mnemonic: link → store
+            ("C-c l i" . org-insert-link-global)) ; Mnemonic: link → insert
+	;; :bind
+	;; (("C-c o c" . org-capture)
+	;;  ("C-c o a" . org-agenda)
+	;;  ("C-c o A" . consult-org-agenda))
 
-  ;; Make org-open-at-point follow file links in the same window
-  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+	:config
+	;;(require 'oc-csl)                     ; citation support
+	(add-to-list 'org-export-backends 'md)
 
-  ;; Make exporting quotes better
-  (setq org-export-with-smart-quotes t)
-  )
+	;; Make org-open-at-point follow file links in the same window
+	(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+
+	;; Make exporting quotes better
+	(setq org-export-with-smart-quotes t)
+
+	:custom
+	(org-src-window-setup 'current-window)
+	(org-startup-folded t)
+	(org-default-notes-file (concat org-directory "/notes.org"))
+	(org-agenda-files (list (concat org-directory "/todo.org")))
+	(org-journal-dir (concat org-directory "/journal/"))
+	(org-journal-date-format "%A, %d %B %Y"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -116,6 +136,9 @@
 ;; Yes, you can have multiple use-package declarations. It's best if their
 ;; configs don't overlap. Once you've reached Phase 2, I'd recommend merging the
 ;; config from Phase 1. I've broken it up here for the sake of clarity.
+
+;; txb -- i need to merge, leaving as a todo.
+
 (use-package org
   :config
   ;; Instead of just two states (TODO, DONE) we set up a few different states
@@ -153,17 +176,17 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package org-roam
-  :ensure t
-  :config
-  (org-roam-db-autosync-mode)
-  ;; Dedicated side window for backlinks
-  (add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.4)
-                 (window-height . fit-window-to-buffer))))
+;; (use-package org-roam
+;;   :ensure t
+;;   :config
+;;   (org-roam-db-autosync-mode)
+;;   ;; Dedicated side window for backlinks
+;;   (add-to-list 'display-buffer-alist
+;;                '("\\*org-roam\\*"
+;;                  (display-buffer-in-side-window)
+;;                  (side . right)
+;;                  (window-width . 0.4)
+;;                  (window-height . fit-window-to-buffer))))
 
 ;; Pretty web interface for org-roam
 ;(use-package org-roam-ui
@@ -174,3 +197,8 @@
 ;        org-roam-ui-follow t
 ;        org-roam-ui-update-on-save t
 ;        org-roam-ui-open-on-start t))
+
+;; txb -- org-modern
+(use-package org-modern
+  :config
+  (global-org-modern-mode))
