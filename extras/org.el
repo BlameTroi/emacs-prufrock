@@ -97,6 +97,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package org
+	:ensure t
 	:hook ((org-mode . visual-line-mode)  ; wrap lines at word breaks
 				(org-src-mode . display-line-numbers-mode)
 				(org-mode . flyspell-mode))    ; spell checking!
@@ -140,6 +141,7 @@
 ;; txb -- i need to merge, leaving as a todo.
 
 (use-package org
+	:ensure t
   :config
   ;; Instead of just two states (TODO, DONE) we set up a few different states
   ;; that a task can be in.
@@ -177,7 +179,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package org-roam
-;;   :ensure t
 ;;   :config
 ;;   (org-roam-db-autosync-mode)
 ;;   ;; Dedicated side window for backlinks
@@ -190,7 +191,6 @@
 
 ;; Pretty web interface for org-roam
 ;(use-package org-roam-ui
-;  :ensure t
 ;  :after org-roam
 ;  :config
 ;  (setq org-roam-ui-sync-theme t
@@ -200,5 +200,6 @@
 
 ;; txb -- org-modern
 (use-package org-modern
-  :config
-  (global-org-modern-mode))
+	:ensure t
+	:config
+	(global-org-modern-mode))

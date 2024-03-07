@@ -7,7 +7,7 @@
  '(column-number-mode t)
  '(display-time-mode t)
  '(package-selected-packages
-	  '(orderless kind-icon cape corfu-terminal corfu-popupinfo corfu marginalia vertico-directory vertico embark-consult embark consult avy editorconfig ef-themes which-key))
+	  '(rg acme-theme avy cape consult corfu corfu-popupinfo corfu-terminal diminish editorconfig ef-themes eglot embark embark-consult eshell geiser geiser-guile json-mode kind-icon marginalia markdown-mode orderless org org-journal org-zettelkasten sml-mode srfi vegetative-theme vertico vertico-directory wgrep which-key ws-butler yaml-mode))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

@@ -88,13 +88,14 @@
 
 ;; txb -- do i need to do anything to get gfm support here?
 (use-package markdown-mode
-  :hook ((markdown-mode . visual-line-mode)))
+	:ensure t
+   :hook ((markdown-mode . visual-line-mode)))
 
 (use-package yaml-mode
-  :ensure t)
+	:ensure t)
 
 (use-package json-mode
-  :ensure t)
+	:ensure t)
 
 ;; Emacs ships with a lot of popular programming language modes. If it's not
 ;; built in, you're almost certain to find a mode for the language you're
@@ -115,7 +116,6 @@
 ;;        eglot. fortls shouldn't care who is calling it.
 
 (use-package eglot
-  ;; no :ensure t here because it's built-in
 
   ;; Configure hooks to automatically turn-on eglot for selected modes
 	:hook

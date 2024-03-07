@@ -14,6 +14,16 @@ March 2024
 
 So let it be written, so let it be done.
 
+## Notes, issues, and oddities
+
+My changes are usually flagged with an leading comment `;; txb --` explaining what, why, or how.
+
+I've already put a couple more `use-package` expressions in init.el. These are for things I consider generally applicable (`ws-butler`, `editorconfig`, `diminish`). Packages with more specificity are still split out into extras.
+
+I learned that mixing and matching installing packages via `use-package` and manual installation with `list-packages` can be confusing. `use-package` does not update `package-selected-packages`. Packages that aren't in there are eligible for `package-autoremove`. After some thinking, I agree with this behavior even though it can result in erroroneous removals. I will attempt to keep the list in custom.el in synch with those packages I `use-package`.
+
+Bedrock is holding up as a good starting point for building a personal Emacs configuration.
+
 *Wiersdorf's original README.md follows*
 
 ## Emacs Bedrock

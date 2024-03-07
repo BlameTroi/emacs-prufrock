@@ -57,16 +57,26 @@
 (setopt user-mail-address "BlameTroi@gmail.com")
 (setopt auth-sources '("~/.authinfo.gpg"))
 (setopt auth-source-cache-expiry nil)
+(setopt initial-scratch-message "
+so let it be written,
+so let it be done.
+
+")
 
 ;; txb -- i had these options in prior configs and am pulling them forward
 ;;        after review.
-(setopt package-native-compile t)
-(setopt use-package-always-ensure t)
+(setq package-native-compile t)
+(setq use-package-always-ensure t)
+
+;; txb -- diminish to keep some stuff off the mode line
+(use-package diminish
+	:ensure t)
 
 ;; If you want to turn off the welcome screen, uncomment this
 (setopt inhibit-splash-screen t)
 
-(setopt initial-major-mode 'fundamental-mode)  ; default mode for the *scratch* buffer
+;; txb -- i want the scratch buffer to be lispish
+;; (setopt initial-major-mode 'fundamental-mode)  ; default mode for the *scratch* buffer
 (setopt display-time-default-load-average nil) ; this information is useless for most
 
 ;; Automatically reread from disk if the underlying file changes
@@ -83,6 +93,10 @@
 ;; Move through windows with Ctrl-<arrow keys>
 ;; txb -- mac uses control arrow to switch desktops
 ;(windmove-default-keybindings 'control) ; You can use other modifiers here
+
+;; txb -- macos ls doesn't support --dired
+(when (eq system-type 'darwin)
+      (setopt ls-lisp-use-insert-directory-program nil))
 
 ;; Fix archaic defaults
 (setopt sentence-end-double-space nil)
@@ -123,9 +137,10 @@ If the new path's directories does not exist, create them."
 ;; which-key: shows a popup of available keybindings when typing a long key
 ;; sequence (e.g. C-x ...)
 (use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
+	:ensure t
+	:diminish
+	:config
+	(which-key-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -202,9 +217,10 @@ If the new path's directories does not exist, create them."
 ;;        file, it won't hurt. if he does, then he should know what to
 ;;        expect.
 (use-package editorconfig
-  :ensure t
-  :config
-  (editorconfig-mode 1))
+	:ensure t
+	:diminish
+	:config
+	(editorconfig-mode 1))
 
 ;; txb -- in programming modes i expect return/enter to re-indent
 ;;        program text. while markdown actually wants trailing
@@ -212,18 +228,23 @@ If the new path's directories does not exist, create them."
 ;;        i've learned about C-j and C-o so i'm not doing the
 ;;        remap of RET for now.
 (use-package ws-butler
-  :hook (prog-mode . ws-butler-mode))
+	:ensure t
+	:diminish
+	:hook (prog-mode . ws-butler-mode))
+
 ;;  (add-hook 'prog-mode-hook
 ;;            (lambda ()
 ;;              (local-set-key (kbd "RET") 'newline-and-indent)))
 
 ;; Misc. UI tweaks
 (blink-cursor-mode -1)                                ; Steady cursor
+
 ;; txb -- after removing mouse wheel support, leaving pixel-scroll-precision-mode
 ;;        on caused scroll bar drags to be very painfully slow. commented out and
 ;;        all is fine.
 ;(pixel-scroll-precision-mode)                         ; Smooth scrolling
-;; txb -- more to my liking.
+
+;; txb -- this is more to my liking.
 (setopt scroll-preserve-screen-position t)
 (setopt scroll-margin 0)
 (setopt scroll-setp 1)
@@ -279,6 +300,11 @@ If the new path's directories does not exist, create them."
    (global-set-key [double-wheel-right] 'ignore)
    (global-set-key [triple-wheel-right] 'ignore)))
 
+;; txb -- keep the mouse at bay. this should move the mouse pointer to the upper
+;;        right corner of the window, or frame, when a key is pressed. hopefully
+;;        this minimizes false button hover highlighting of buttons.
+(mouse-avoidance-mode 'banish)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;   Tab-bar configuration
@@ -308,8 +334,9 @@ If the new path's directories does not exist, create them."
 ;;        as safe in customization and remove the t flag, but maybe not. i mean,
 ;;        really, is one any safer than the other?
 (use-package ef-themes
-  :config
-  (load-theme 'ef-melissa-dark t))
+	:ensure t
+	:config
+	(load-theme 'ef-melissa-dark t))
 ;; txb -- other themes i like include vegetative.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -332,7 +359,7 @@ If the new path's directories does not exist, create them."
 ;; Packages for software development
 ;; txb -- packages and configuration for the languages i use will be
 ;;        added to extras/ and invoked from dev.el as they are done.
-;(load-file (expand-file-name "extras/dev.el" user-emacs-directory))
+(load-file (expand-file-name "extras/dev.el" user-emacs-directory))
 
 ;; txb -- i'm going to resist evil for now
 ;; Vim-bindings in Emacs (evil-mode configuration)
@@ -341,7 +368,7 @@ If the new path's directories does not exist, create them."
 ;; Org-mode configuration
 ;; WARNING: need to customize things inside the elisp file before use! See
 ;; the file extras/org-intro.txt for help.
-;(load-file (expand-file-name "extras/org.el" user-emacs-directory))
+(load-file (expand-file-name "extras/org.el" user-emacs-directory))
 
 ;; Email configuration in Emacs
 ;; WARNING: needs the `mu' program installed; see the elisp file for more
