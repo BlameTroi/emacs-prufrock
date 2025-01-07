@@ -45,25 +45,37 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; txb -- i don't do js or webish stuff so those are commented out for now.
+;; txb -- i don't do js or webish stuff so i've removed those languages to
+;;        keep things simple while i get fortran working.
 
 (use-package emacs
-  :config
-  ;; Treesitter config
+	:config
+	;; Treesitter config
 
-  ;; Tell Emacs to prefer the treesitter mode
-  ;; You'll want to run the command `M-x treesit-install-language-grammar' before editing.
-  (setq major-mode-remap-alist
-        '((yaml-mode . yaml-ts-mode)
+	;; Tell Emacs to prefer the treesitter mode
+	;; You'll want to run the command `M-x treesit-install-language-grammar' before editing.
+	(setq major-mode-remap-alist
+      '((yaml-mode . yaml-ts-mode)
           (bash-mode . bash-ts-mode)
-;          (js2-mode . js-ts-mode)
-;          (typescript-mode . typescript-ts-mode)
           (json-mode . json-ts-mode)
-;          (css-mode . css-ts-mode)
-          (python-mode . python-ts-mode)))
-  :hook
-  ;; Auto parenthesis matching
-  ((prog-mode . electric-pair-mode)))
+			 (python-mode . python-ts-mode)))
+	:hook
+	;; Auto parenthesis matching
+	((prog-mode . electric-pair-mode)))
+
+;; ;; txb -- this needs to be moved but i'm not sure if it becomes part of the
+;; ;;        above or part of the modern fortran block. i'm not sure of the
+;; ;;        ts-mode and remap yet.
+;; (setq troi-f90-tsauto-config
+;;    (make-treesit-auto-recipe
+;;       :lang 'f90
+;;       :ts-mode 'f90-ts-mode
+;; 		:remap '(f90-mode)
+;; 		:url "https://github.com/stadelmanma/tree-sitter-fortran"
+;;       :revision "master"
+;;       :source-dir "src"
+;;       :ext "\\.f90\\'"))
+;; (add-to-list 'treesit-auto-recipe-list troi-f90-tsauto-config)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -91,11 +103,10 @@
 	:ensure t
    :hook ((markdown-mode . visual-line-mode)))
 
-(use-package yaml-mode
-	:ensure t)
-
-(use-package json-mode
-	:ensure t)
+;; (use-package yaml-mode
+;; 	:ensure t)
+;; (use-package json-mode
+;; 	:ensure t)
 
 ;; Emacs ships with a lot of popular programming language modes. If it's not
 ;; built in, you're almost certain to find a mode for the language you're
@@ -117,18 +128,25 @@
 
 (use-package eglot
 
-  ;; Configure hooks to automatically turn-on eglot for selected modes
+	:ensure t
+
+	;; Configure hooks to automatically turn-on eglot for selected modes
 	:hook
-	((f90-mode . eglot))
-  ; (((python-mode ruby-mode elixir-mode) . eglot))
+	(((python-mode ruby-mode elixir-mode) . eglot))
 
-  :custom
-  (eglot-send-changes-idle-time 0.1)
-  (eglot-extend-to-xref t)              ; activate Eglot in referenced non-project files
+	:custom
+	(eglot-send-changes-idle-time 0.1)
+	(eglot-extend-to-xref t)              ; activate Eglot in referenced non-project files
 
-  :config
-  (fset #'jsonrpc--log-event #'ignore)  ; massive perf boost---don't log every event
-  ;; Sometimes you need to tell Eglot where to find the language server
-  ; (add-to-list 'eglot-server-programs
-  ;              '(haskell-mode . ("haskell-language-server-wrapper" "--lsp")))
-  )
+	:config
+	;; txb -- off while getting working
+	;; (fset #'jsonrpc--log-event #'ignore)  ; massive perf boost---don't log every event
+
+	;; Sometimes you need to tell Eglot where to find the language server
+	(add-to-list 'eglot-server-programs '(f90-mode . ("fortls" "--notify_init" "--nthreads=4")))
+
+	;; (add-to-list 'eglot-server-programs
+	;;              '(haskell-mode . ("haskell-language-server-wrapper" "--lsp")))
+	)
+
+;;; dev.el ends here

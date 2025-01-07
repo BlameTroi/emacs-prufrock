@@ -95,15 +95,25 @@ so let it be done.
 ;(windmove-default-keybindings 'control) ; You can use other modifiers here
 
 ;; txb -- macos ls doesn't support --dired
-(when (eq system-type 'darwin)
-      (setopt ls-lisp-use-insert-directory-program nil))
+;;        let's try it in custom
+;; (when (eq system-type 'darwin)
+;;      (setopt ls-lisp-use-insert-directory-program nil))
 
 ;; Fix archaic defaults
 (setopt sentence-end-double-space nil)
 
+;; txb -- using the context menu reliably hangs up emacs on my mac. apparently
+;;        the spinning beachball hang is still a thing, and it happens to
+;;        many people on the mac. who knew. the lock up is so hard that i
+;;        can't do anything other than force it down from the os. C-g isn't
+;;        acknowledged. i tried some of the magic handwaving ideas that were
+;;        out on the interwebs, but they do nothing. i'm not dependent on
+;;        the context menu concept, i merely was using it for discovery as
+;;        i play around, so turning it off isn't a big deal.
+
 ;; Make right-click do something sensible
-(when (display-graphic-p)
-  (context-menu-mode))
+;; (when (display-graphic-p)
+;;   (context-menu-mode))
 
 ;; Don't litter file system with *~ backup files; put them all inside
 ;; ~/.emacs.d/backup or wherever
@@ -359,7 +369,7 @@ If the new path's directories does not exist, create them."
 ;; Packages for software development
 ;; txb -- packages and configuration for the languages i use will be
 ;;        added to extras/ and invoked from dev.el as they are done.
-(load-file (expand-file-name "extras/dev.el" user-emacs-directory))
+;;(load-file (expand-file-name "extras/dev.el" user-emacs-directory))
 
 ;; txb -- i'm going to resist evil for now
 ;; Vim-bindings in Emacs (evil-mode configuration)
@@ -368,7 +378,7 @@ If the new path's directories does not exist, create them."
 ;; Org-mode configuration
 ;; WARNING: need to customize things inside the elisp file before use! See
 ;; the file extras/org-intro.txt for help.
-(load-file (expand-file-name "extras/org.el" user-emacs-directory))
+;;(load-file (expand-file-name "extras/org.el" user-emacs-directory))
 
 ;; Email configuration in Emacs
 ;; WARNING: needs the `mu' program installed; see the elisp file for more
